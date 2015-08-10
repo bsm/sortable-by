@@ -11,7 +11,6 @@ Gem::Specification.new do |s|
 
   s.files         = `git ls-files -z`.split("\x0").reject {|f| f.match(%r{^spec/}) }
   s.test_files    = `git ls-files -z -- spec/*`.split("\x0")
-  s.executables   = ['grape-app']
   s.require_paths = ['lib']
   s.required_ruby_version = '>= 1.9.3'
 

@@ -1,13 +1,12 @@
 # Sortable By
 
-ActiveRecord plugin to parse the sort order from a query parameter and generate a scope.
-Useful for [JSON-API][jsonapi] compatibility.
+ActiveRecord plugin to parse the sort order from a query parameter, match against a white-list and generate a scope. Useful for [JSON-API][jsonapi] compatibility.
 
 [jsonapi]: http://jsonapi.org/format/#fetching-sorting
 
 ## Installation
 
-Add `gem 'sortable'` to your Gemfile.
+Add `gem 'sortable-by'` to your Gemfile.
 
 ## Usage
 
@@ -15,14 +14,15 @@ Simple use cases:
 
 ```ruby
 class Foo < ActiveRecord::Base
-  sortable_by :title, :updated_at
+  sortable_by :title, :updated_at, default: { updated_at: :desc }
 end
 
 Foo.sort_by "-updated_at,title" # => ORDER BY updated_at DESC, title ASC
-Foo.sort_by "bad,title" # => ORDER BY title ASC
+Foo.sort_by "bad,title"         # => ORDER BY title ASC
+Foo.sort_by nil                 # => ORDER BY updated_at DESC
 ```
 
-## LICENSE
+## LICENCE
 
 ```
 Copyright (c) 2015 Black Square Media
