@@ -21,7 +21,7 @@ module ActiveRecord
 
       # @param [String] expr the sort expr
       # @return [ActiveRecord::Relation] the scoped relation
-      def sort_by(expr)
+      def sorted_by(expr)
         options = {}
         expr.to_s.split(',').each do |name|
           name.strip!

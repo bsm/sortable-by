@@ -17,9 +17,9 @@ class Foo < ActiveRecord::Base
   sortable_by :title, :updated_at, default: { updated_at: :desc }
 end
 
-Foo.sort_by "-updated_at,title" # => ORDER BY updated_at DESC, title ASC
-Foo.sort_by "bad,title"         # => ORDER BY title ASC
-Foo.sort_by nil                 # => ORDER BY updated_at DESC
+Foo.sorted_by "-updated_at,title" # => ORDER BY updated_at DESC, title ASC
+Foo.sorted_by "bad,title"         # => ORDER BY title ASC
+Foo.sorted_by nil                 # => ORDER BY updated_at DESC
 ```
 
 ## LICENCE
