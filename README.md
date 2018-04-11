@@ -13,38 +13,75 @@ Add `gem 'sortable-by'` to your Gemfile.
 
 ## Usage
 
-Simple use case:
+Simple:
 
 ```ruby
-class Foo < ActiveRecord::Base
-  sortable_by :title, :updated_at, default: { updated_at: :desc }
+class Post < ActiveRecord::Base
+  sortable_by :title, :id
 end
 
-Foo.sorted_by "-updated_at,title" # => ORDER BY foos.updated_at DESC, foos.title ASC
-Foo.sorted_by "bad,title"         # => ORDER BY foos.title ASC
-Foo.sorted_by nil                 # => ORDER BY foos.updated_at DESC
+Post.sorted_by('title')     # => ORDER BY posts.title ASC
+Post.sorted_by('-title')    # => ORDER BY posts.title DESC
+Post.sorted_by('bad,title') # => ORDER BY posts.title ASC
+Post.sorted_by(nil)         # => ORDER BY posts.title ASC
 ```
 
-Aliases and composition:
+Case-insensitive:
 
 ```ruby
-class Foo < ActiveRecord::Base
-  sortable_by semver: %i[major minor patch], default: { id: :asc }
+class Post < ActiveRecord::Base
+  sortable_by do |x|
+    x.field :title, as: arel_table[:title].lower
+    x.field :id
+  end
 end
 
-Foo.sorted_by "semver"   # => ORDER BY foos.major ASC, foos.minor ASC, foos.patch ASC
-Foo.sorted_by "-semver"  # => ORDER BY foos.major DESC, foos.minor DESC, foos.patch DESC
-Foo.sorted_by nil        # => ORDER BY foos.id ASC
+Post.sorted_by('title') # => ORDER BY LOWER(posts.title) ASC
 ```
 
-Custom functions:
+With custom default:
 
 ```ruby
-class Foo < ActiveRecord::Base
-  sortable_by insensitive: Arel::Nodes::NamedFunction.new('LOWER', [arel_table[:title]]), default: { id: :asc }
+class Post < ActiveRecord::Base
+  sortable_by :id, :topic, :created_at, default: 'topic,-created_at'
 end
 
-Foo.sorted_by "insensitive"   # => ORDER BY LOWER(foos.title) ASC
-Foo.sorted_by "-insensitive"  # => ORDER BY LOWER(foos.title) DESC
-Foo.sorted_by nil             # => ORDER BY foos.id ASC
+Post.sorted_by(nil) # => ORDER BY posts.topic ASC, posts.created_at DESC
+```
+
+Composition:
+
+```ruby
+class App < ActiveRecord::Base
+  sortable_by :name, default: '-version' do |x|
+    x.field :version, as: %i[major minor patch]]
+  end
+end
+
+App.sorted_by('version') # => ORDER BY apps.major ASC, apps.minor ASC, apps.patch ASC
+App.sorted_by(nil)       # => ORDER BY apps.major DESC, apps.minor DESC, apps.patch DESC
+```
+
+Associations (eager load):
+
+```ruby
+class Product < ActiveRecord::Base
+  belongs_to :shop
+  sortable_by do |x|
+    x.field :name, as: arel_table[:name].lower
+    x.field :shop, as: Shop.arel_table[:name].lower, eager_load: :shop
+    x.default 'shop,name'
+  end
+end
+```
+
+Associations (custom scope):
+
+```
+class Product < ActiveRecord::Base
+  belongs_to :shop
+  sortable_by do |x|
+    x.field :shop, as: Shop.arel_table[:name].lower, scope: -> { joins(:shop) }
+  end
+end
 ```
