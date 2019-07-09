@@ -3,7 +3,7 @@ require 'sortable-by'
 require 'rspec'
 
 ActiveRecord::Base.configurations['test'] = {
-  'adapter' => 'sqlite3',
+  'adapter'  => 'sqlite3',
   'database' => ':memory:',
 }
 ActiveRecord::Base.establish_connection :test

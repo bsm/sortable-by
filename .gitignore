@@ -2,3 +2,4 @@ spec/tmp
 pkg
 *.gem
 .rake_tasks~
+.rubocop-*

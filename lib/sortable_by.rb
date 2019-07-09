@@ -17,7 +17,7 @@ module ActiveRecord # :nodoc:
         duplicate
       end
 
-      def field(name, opts = {})
+      def field(name, opts={})
         name = name.to_s
         @_fields[name] = Field.new(name, opts)
         @_default ||= name
@@ -36,7 +36,7 @@ module ActiveRecord # :nodoc:
 
       protected
 
-      def order(relation, expr, fallback = true)
+      def order(relation, expr, fallback=true)
         matched = false
         expr.to_s.split(',').each do |name|
           name.strip!
@@ -60,15 +60,13 @@ module ActiveRecord # :nodoc:
     end
 
     class Field # :nodoc:
-      def initialize(name, opts = {})
+      def initialize(name, opts={})
         @cols = Array.wrap(opts[:as])
         @eager_load = Array.wrap(opts[:eager_load]).presence
 
         # validate custom_scope
         @custom_scope = opts[:scope]
-        if @custom_scope && !@custom_scope.is_a?(Proc)
-          raise ArgumentError, "Invalid sortable-by field '#{name}': scope must be a Proc."
-        end
+        raise ArgumentError, "Invalid sortable-by field '#{name}': scope must be a Proc." if @custom_scope && !@custom_scope.is_a?(Proc)
 
         # normalize cols
         @cols.push name if @cols.empty?
@@ -77,9 +75,7 @@ module ActiveRecord # :nodoc:
           when String, Symbol, Arel::Attributes::Attribute, Arel::Nodes::Node
             next
           when Proc
-            unless col.arity == 2
-              raise ArgumentError, "Invalid sortable-by field '#{name}': proc must accept 2 arguments."
-            end
+            raise ArgumentError, "Invalid sortable-by field '#{name}': proc must accept 2 arguments." unless col.arity == 2
           else
             raise ArgumentError, "Invalid sortable-by field '#{name}': invalid type #{col.class}."
           end

@@ -1,29 +1,10 @@
+inherit_from:
+  - https://gitlab.com/bsm/misc/raw/master/rubocop/default.yml
+
 AllCops:
-  TargetRubyVersion: 2.2
+  TargetRubyVersion: 2.4
 
 Naming/MemoizedInstanceVariableName:
   Enabled: false
-
-Metrics/AbcSize:
-  Enabled: false
-Metrics/CyclomaticComplexity:
-  Enabled: false
-Metrics/PerceivedComplexity:
-  Enabled: false
 Naming/FileName:
   Exclude: [lib/sortable-by.rb]
-Metrics/BlockLength:
-  Exclude: [spec/**]
-Metrics/MethodLength:
-  Enabled: false
-Metrics/LineLength:
-  Max: 120
-
-Style/NumericLiterals:
-  Exclude: [spec/**]
-Style/TrailingCommaInArguments:
-  EnforcedStyleForMultiline: consistent_comma
-Style/TrailingCommaInArrayLiteral:
-  EnforcedStyleForMultiline: consistent_comma
-Style/TrailingCommaInHashLiteral:
-  EnforcedStyleForMultiline: consistent_comma
