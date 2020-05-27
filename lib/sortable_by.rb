@@ -17,7 +17,7 @@ module ActiveRecord # :nodoc:
         duplicate
       end
 
-      def field(name, opts={})
+      def field(name, opts = {})
         name = name.to_s
         @_fields[name] = Field.new(name, opts)
         @_default ||= name
@@ -36,7 +36,7 @@ module ActiveRecord # :nodoc:
 
       protected
 
-      def order(relation, expr, fallback=true)
+      def order(relation, expr, fallback = true)
         matched = false
         expr.to_s.split(',').each do |name|
           name.strip!
@@ -60,7 +60,7 @@ module ActiveRecord # :nodoc:
     end
 
     class Field # :nodoc:
-      def initialize(name, opts={})
+      def initialize(name, opts = {})
         @cols = Array.wrap(opts[:as])
         @eager_load = Array.wrap(opts[:eager_load]).presence
 
