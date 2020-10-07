@@ -17,9 +17,9 @@ module ActiveRecord # :nodoc:
         duplicate
       end
 
-      def field(name, opts = {})
+      def field(name, **opts)
         name = name.to_s
-        @_fields[name] = Field.new(name, opts)
+        @_fields[name] = Field.new(name, **opts)
         @_default ||= name
       end
 
@@ -36,7 +36,7 @@ module ActiveRecord # :nodoc:
 
       protected
 
-      def order(relation, expr, fallback = true)
+      def order(relation, expr, fallback: true)
         matched = false
         expr.to_s.split(',').each do |name|
           name.strip!
@@ -50,22 +50,23 @@ module ActiveRecord # :nodoc:
           field = _fields[name]
           next unless field
 
-          matched  = true
+          matched = true
           relation = field.order(relation, rank)
         end
 
-        relation = order(relation, _default, false) if fallback && !matched && _default
+        relation = order(relation, _default, fallback: false) if fallback && !matched && _default
         relation
       end
     end
 
     class Field # :nodoc:
-      def initialize(name, opts = {})
-        @cols = Array.wrap(opts[:as])
-        @eager_load = Array.wrap(opts[:eager_load]).presence
+      def initialize(name, as: nil, scope: nil, eager_load: nil, case_sensitive: false)
+        @cols = Array.wrap(as)
+        @eager_load = Array.wrap(eager_load).presence
+        @case_sensitive = case_sensitive == true
 
         # validate custom_scope
-        @custom_scope = opts[:scope]
+        @custom_scope = scope
         raise ArgumentError, "Invalid sortable-by field '#{name}': scope must be a Proc." if @custom_scope && !@custom_scope.is_a?(Proc)
 
         # normalize cols
@@ -86,7 +87,10 @@ module ActiveRecord # :nodoc:
         @cols.each do |col|
           case col
           when String, Symbol
-            relation = relation.order(col => rank)
+            type = relation.columns_hash[col.to_s].type
+            col  = relation.arel_table[col]
+            col  = col.lower if (type == :string || type == :text) && !@case_sensitive
+            relation = relation.order(col.send(rank))
           when Arel::Nodes::Node, Arel::Attributes::Attribute
             relation = relation.order(col.send(rank))
           when Proc
@@ -117,10 +121,10 @@ module ActiveRecord # :nodoc:
     #     sortable_by :title, :id
     #   end
     #
-    #   # Case-insensitive
+    #   # Case-sensitive
     #   class Post < ActiveRecord::Base
     #     sortable_by do |x|
-    #       x.field :title, as: arel_table[:title].lower
+    #       x.field :title, case_sensitive: true
     #       x.field :id
     #     end
     #   end
@@ -144,7 +148,7 @@ module ActiveRecord # :nodoc:
     #
     #     sortable_by do |x|
     #       x.field :name
-    #       x.field :shop, as: Shop.arel_table[:name].lower, eager_load: :shop
+    #       x.field :shop, as: Shop.arel_table[:name], eager_load: :shop
     #       x.default 'shop,name'
     #     end
     #   end
@@ -154,17 +158,16 @@ module ActiveRecord # :nodoc:
     #     belongs_to :shop
     #
     #     sortable_by do |x|
-    #       x.field :shop, as: Shop.arel_table[:name].lower, scope: -> { joins(:shop) }
+    #       x.field :shop, as: Shop.arel_table[:name], scope: -> { joins(:shop) }
     #     end
     #   end
     #
-    def sortable_by(*attributes)
+    def sortable_by(*attributes, **opts)
       config  = _sortable_by_config
-      opts    = attributes.extract_options!
       default = opts.delete(:default)
 
       attributes.each do |name|
-        config.field(name, opts)
+        config.field(name, **opts)
       end
       config.default(default) if default
       yield config if block_given?
