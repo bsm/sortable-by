@@ -60,6 +60,8 @@ module ActiveRecord # :nodoc:
     end
 
     class Field # :nodoc:
+      STRING_TYPES = %i[string text].freeze # :nodoc:
+
       def initialize(name, as: nil, scope: nil, eager_load: nil, case_sensitive: false)
         @cols = Array.wrap(as)
         @eager_load = Array.wrap(eager_load).presence
@@ -89,7 +91,7 @@ module ActiveRecord # :nodoc:
           when String, Symbol
             type = relation.columns_hash[col.to_s].type
             col  = relation.arel_table[col]
-            col  = col.lower if (type == :string || type == :text) && !@case_sensitive
+            col  = col.lower if STRING_TYPES.include?(type) && !@case_sensitive
             relation = relation.order(col.send(rank))
           when Arel::Nodes::Node, Arel::Attributes::Attribute
             relation = relation.order(col.send(rank))
