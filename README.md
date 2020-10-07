@@ -20,23 +20,23 @@ class Post < ActiveRecord::Base
   sortable_by :title, :id
 end
 
-Post.sorted_by('title')     # => ORDER BY posts.title ASC
-Post.sorted_by('-title')    # => ORDER BY posts.title DESC
-Post.sorted_by('bad,title') # => ORDER BY posts.title ASC
-Post.sorted_by(nil)         # => ORDER BY posts.title ASC
+Post.sorted_by('title')     # => ORDER BY LOWER(posts.title) ASC
+Post.sorted_by('-title')    # => ORDER BY LOWER(posts.title) DESC
+Post.sorted_by('bad,title') # => ORDER BY LOWER(posts.title) ASC
+Post.sorted_by(nil)         # => ORDER BY LOWER(posts.title) ASC
 ```
 
-Case-insensitive:
+Case-sensitive:
 
 ```ruby
 class Post < ActiveRecord::Base
   sortable_by do |x|
-    x.field :title, as: arel_table[:title].lower
+    x.field :title, case_sensitive: true
     x.field :id
   end
 end
 
-Post.sorted_by('title') # => ORDER BY LOWER(posts.title) ASC
+Post.sorted_by('title') # => ORDER BY posts.title ASC
 ```
 
 With custom default:
@@ -46,7 +46,7 @@ class Post < ActiveRecord::Base
   sortable_by :id, :topic, :created_at, default: 'topic,-created_at'
 end
 
-Post.sorted_by(nil) # => ORDER BY posts.topic ASC, posts.created_at DESC
+Post.sorted_by(nil) # => ORDER BY LOWER(posts.topic) ASC, posts.created_at DESC
 ```
 
 Composition:
@@ -68,8 +68,8 @@ Associations (eager load):
 class Product < ActiveRecord::Base
   belongs_to :shop
   sortable_by do |x|
-    x.field :name, as: arel_table[:name].lower
-    x.field :shop, as: Shop.arel_table[:name].lower, eager_load: :shop
+    x.field :name
+    x.field :shop, as: Shop.arel_table[:name], eager_load: :shop
     x.default 'shop,name'
   end
 end
@@ -77,11 +77,11 @@ end
 
 Associations (custom scope):
 
-```
+```ruby
 class Product < ActiveRecord::Base
   belongs_to :shop
   sortable_by do |x|
-    x.field :shop, as: Shop.arel_table[:name].lower, scope: -> { joins(:shop) }
+    x.field :shop, as: Shop.arel_table[:name], scope: -> { joins(:shop) }
   end
 end
 ```

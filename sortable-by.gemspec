@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'sortable-by'
-  s.version     = '0.12.1'
+  s.version     = '0.13.0'
   s.authors     = ['Dimitrij Denissenko']
   s.email       = ['dimitrij@blacksquaremedia.com']
   s.summary     = 'Generate white-listed sort scopes from URL parameter values'

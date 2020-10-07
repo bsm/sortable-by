@@ -17,14 +17,14 @@ ActiveRecord::Base.connection.create_table :posts do |t|
 end
 
 class Post < ActiveRecord::Base
-  sortable_by :title, default: '-created' do |s|
+  sortable_by :title, default: '-created', case_sensitive: true do |s|
     s.field :created, as: arel_table[:created_at]
   end
 end
 
 class SubPost < Post
   sortable_by do |s|
-    s.field :title, as: arel_table[:title].lower
+    s.field :title
   end
 end
 
@@ -65,8 +65,8 @@ class Product < ActiveRecord::Base
   belongs_to :shop
 
   sortable_by do |s|
-    s.field :name, as: arel_table[:name].lower
-    s.field :shop, as: Shop.arel_table[:name].lower, eager_load: :shop
+    s.field :name
+    s.field :shop, as: Shop.arel_table[:name], eager_load: :shop
     s.default 'shop,name'
   end
 end
