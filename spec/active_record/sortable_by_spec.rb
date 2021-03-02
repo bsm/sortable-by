@@ -1,4 +1,4 @@
-require File.expand_path('./spec_helper', __dir__)
+require 'spec_helper'
 
 describe ActiveRecord::SortableBy do
   before do
@@ -8,7 +8,7 @@ describe ActiveRecord::SortableBy do
     end
   end
 
-  it 'should have config' do
+  it 'has config' do
     expect(Post._sortable_by_config._fields.keys).to match_array(%w[title created])
     expect(Post._sortable_by_config._default).to eq('-created')
     expect(SubPost._sortable_by_config._fields.keys).to match_array(%w[title created])
@@ -24,7 +24,7 @@ describe ActiveRecord::SortableBy do
     expect(Product._sortable_by_config._default).to eq('shop,name')
   end
 
-  it 'should simply order' do
+  it 'simplies order' do
     Post.create! title: 'A', created_at: Time.at(1515151500)
     Post.create! title: 'b', created_at: Time.at(1515151600)
     Post.create! title: 'C', created_at: Time.at(1515151400)
@@ -41,7 +41,7 @@ describe ActiveRecord::SortableBy do
     expect(Post.sorted_by('   title ').pluck(:title)).to eq(%w[A C b])
   end
 
-  it 'should support STI inheritance and overrides' do
+  it 'supports STI inheritance and overrides' do
     SubPost.create! title: 'A', created_at: Time.at(1515151700)
     SubPost.create! title: 'b', created_at: Time.at(1515151600)
     Post.create! title: 'C', created_at: Time.at(1515151400)
@@ -56,7 +56,7 @@ describe ActiveRecord::SortableBy do
     expect(SubPost.sorted_by('title').pluck(:title)).to eq(%w[A b D])
   end
 
-  it 'should support composition' do
+  it 'supports composition' do
     App.create! name: 'E', major: 0, minor: 9, patch: 2
     App.create! name: 'A', major: 1, minor: 0, patch: 1
     App.create! name: 'D', major: 1, minor: 0, patch: 6
@@ -68,7 +68,7 @@ describe ActiveRecord::SortableBy do
     expect(App.sorted_by('-version').pluck(:name)).to eq(%w[B C D A E])
   end
 
-  it 'should support associations' do
+  it 'supports associations' do
     y = Shop.create! name: 'Y'
     x = Shop.create! name: 'X'
 
