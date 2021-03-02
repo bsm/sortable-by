@@ -44,7 +44,7 @@ module ActiveRecord # :nodoc:
           rank = :asc
           if name[0] == '-'
             rank = :desc
-            name = name[1..-1]
+            name = name[1..]
           end
 
           field = _fields[name]
