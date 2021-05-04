@@ -1,6 +1,6 @@
 # Sortable By
 
-[![Build Status](https://github.com/bsm/sortable-by/actions/workflows/ruby.yml/badge.svg)](https://github.com/bsm/sortable-by/actions/workflows/ruby.yml)
+[![Test](https://github.com/bsm/sortable-by/actions/workflows/test.yml/badge.svg)](https://github.com/bsm/sortable-by/actions/workflows/test.yml)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ActiveRecord plugin to parse the sort order from a query parameter, match against a white-list and generate a scope. Useful for [JSON-API][jsonapi] compatibility.
