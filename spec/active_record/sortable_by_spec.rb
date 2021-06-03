@@ -24,7 +24,7 @@ describe ActiveRecord::SortableBy do
     expect(Product._sortable_by_config._default).to eq('shop,name')
   end
 
-  it 'simplies order' do
+  it 'supports simple ordering' do
     Post.create! title: 'A', created_at: Time.at(1515151500)
     Post.create! title: 'b', created_at: Time.at(1515151600)
     Post.create! title: 'C', created_at: Time.at(1515151400)
@@ -39,6 +39,15 @@ describe ActiveRecord::SortableBy do
     expect(Post.sorted_by('title').pluck(:title)).to eq(%w[A C b])
     expect(Post.sorted_by('-title').pluck(:title)).to eq(%w[b C A])
     expect(Post.sorted_by('   title ').pluck(:title)).to eq(%w[A C b])
+  end
+
+  it 'supports array params' do
+    Post.create! title: 'A', created_at: Time.at(1515151500)
+    Post.create! title: 'C', created_at: Time.at(1515151400)
+    Post.create! title: 'B', created_at: Time.at(1515151400)
+
+    expect(Post.sorted_by(['created', '-title']).pluck(:title)).to eq(%w[C B A])
+    expect(Post.sorted_by(['created ,  -title']).pluck(:title)).to eq(%w[C B A])
   end
 
   it 'supports STI inheritance and overrides' do
