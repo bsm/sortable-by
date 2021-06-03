@@ -20,10 +20,12 @@ class Post < ActiveRecord::Base
   sortable_by :title, :id
 end
 
-Post.sorted_by('title')     # => ORDER BY LOWER(posts.title) ASC
-Post.sorted_by('-title')    # => ORDER BY LOWER(posts.title) DESC
-Post.sorted_by('bad,title') # => ORDER BY LOWER(posts.title) ASC
-Post.sorted_by(nil)         # => ORDER BY LOWER(posts.title) ASC
+Post.sorted_by('title')          # => ORDER BY LOWER(posts.title) ASC
+Post.sorted_by('-title')         # => ORDER BY LOWER(posts.title) DESC
+Post.sorted_by('title,-id')      # => ORDER BY LOWER(posts.title) ASC, id DESC
+Post.sorted_by(['title', '-id']) # => ORDER BY LOWER(posts.title) ASC, id DESC
+Post.sorted_by('bad,title')      # => ORDER BY LOWER(posts.title) ASC
+Post.sorted_by(nil)              # => ORDER BY LOWER(posts.title) ASC
 ```
 
 Case-sensitive:

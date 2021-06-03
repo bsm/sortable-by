@@ -38,7 +38,7 @@ module ActiveRecord # :nodoc:
 
       def order(relation, expr, fallback: true)
         matched = false
-        expr.to_s.split(',').each do |name|
+        Array.wrap(expr).flat_map {|v| v.to_s.split(',') }.each do |name|
           name.strip!
 
           rank = :asc
