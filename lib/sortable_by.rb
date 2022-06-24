@@ -65,6 +65,10 @@ module ActiveRecord # :nodoc:
       def initialize(name, as: nil, scope: nil, eager_load: nil, case_sensitive: false)
         @cols = Array.wrap(as)
         @eager_load = Array.wrap(eager_load).presence
+        if @eager_load
+          inner = @eager_load.inspect
+          ActiveSupport::Deprecation.warn("using :eager_load in sortable_by blocks is deprecated. Please pass scope: -> { includes(#{inner}) } instead.")
+        end
         @case_sensitive = case_sensitive == true
 
         # validate custom_scope
@@ -101,7 +105,7 @@ module ActiveRecord # :nodoc:
         end
 
         relation = relation.eager_load(*@eager_load) if @eager_load
-        relation = relation.instance_eval(&@custom_scope) if @custom_scope
+        relation = relation.instance_exec(&@custom_scope) if @custom_scope
         relation
       end
     end

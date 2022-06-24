@@ -13,3 +13,5 @@ Naming/MemoizedInstanceVariableName:
   Enabled: false
 Naming/FileName:
   Exclude: [lib/sortable-by.rb]
+Metrics/ParameterLists:
+  Max: 10
