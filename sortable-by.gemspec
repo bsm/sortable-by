@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'sortable-by'
-  s.version     = '0.13.3'
+  s.version     = '0.14.0'
   s.authors     = ['Dimitrij Denissenko']
   s.email       = ['dimitrij@blacksquaremedia.com']
   s.summary     = 'Generate white-listed sort scopes from URL parameter values'
@@ -9,7 +9,6 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.files         = `git ls-files -z`.split("\x0").reject {|f| f.match(%r{^spec/}) }
-  s.test_files    = `git ls-files -z -- spec/*`.split("\x0")
   s.require_paths = ['lib']
   s.required_ruby_version = '>= 2.7'
 
