@@ -64,19 +64,6 @@ App.sorted_by('version') # => ORDER BY apps.major ASC, apps.minor ASC, apps.patc
 App.sorted_by(nil)       # => ORDER BY apps.major DESC, apps.minor DESC, apps.patch DESC
 ```
 
-Associations (eager load):
-
-```ruby
-class Product < ActiveRecord::Base
-  belongs_to :shop
-  sortable_by do |x|
-    x.field :name
-    x.field :shop, as: Shop.arel_table[:name], eager_load: :shop
-    x.default 'shop,name'
-  end
-end
-```
-
 Associations (custom scope):
 
 ```ruby
