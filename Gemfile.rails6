@@ -3,9 +3,6 @@ gemspec
 
 gem 'activerecord', '~> 6.1'
 gem 'rake'
+gem 'rspec'
+gem 'rubocop-bsm'
 gem 'sqlite3'
-
-group 'development', 'test' do
-  gem 'rspec'
-  gem 'rubocop-bsm'
-end
